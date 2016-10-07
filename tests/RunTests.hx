@@ -50,7 +50,7 @@ class RunTests extends TestCase {
       assertEquals(a, b, pos);
       
     for (i in 0...50) {
-      var v = i * Math.random() / Math.random();
+      var v = Std.parseFloat(Std.string(i * Math.random() / Math.random()));
       eq(v,   v );
       eq(v, '$v');  
     }
