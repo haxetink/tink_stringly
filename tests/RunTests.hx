@@ -72,6 +72,32 @@ class RunTests extends TestCase {
     assertFalse(bool(null));
   }
   
+  function testCommaSeparatedArray() {
+    function string(s:String):tink.stringly.CommaSeparatedArray<String>
+      return (s : Stringly);
+    function int(s:String):tink.stringly.CommaSeparatedArray<Int>
+      return (s : Stringly);
+    function float(s:String):tink.stringly.CommaSeparatedArray<Float>
+      return (s : Stringly);
+    function bool(s:String):tink.stringly.CommaSeparatedArray<Bool>
+      return (s : Stringly);
+    
+    var v = string('a,b,c,d,e');
+    for(i in 0...v.length) assertEquals(97 + i, v[i].charCodeAt(0));
+    
+    var v = int('1,2,3,4,5');
+    for(i in 0...v.length) assertEquals(i + 1, v[i]);
+    
+    var v = float('1.1,2.2,3.3,4.4,5.5');
+    for(i in 0...v.length) assertEquals((i + 1) + (i + 1) / 10, v[i]);
+    
+    var v = bool('true,yes,1,2,whatever');
+    for(i in 0...v.length) assertTrue(v[i]);
+    
+    var v = bool('false,no,0');
+    for(i in 0...v.length) assertFalse(v[i]);
+  }
+  
   static function main() {
     var runner = new TestRunner();
     runner.add(new RunTests());
