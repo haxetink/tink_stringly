@@ -114,18 +114,22 @@ abstract Stringly(String) from String to String {
         }
         Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
-        var stamp = switch SUPPORTED_DATE_REGEX.matched(1) {
-          case _.split('T') => [_.split('-').map(Std.parseInt) => [y, m, d], _.split(':').map(Std.parseInt) => [hh, mm, ss]]:
-            y -= 1970;
-            var leaps = y < 2 ? 0 : Std.int((y-2) / 4);
-            var daysSinceYearStart = d - 1;
-            var daysOfMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
-            for(m in 0...m-1) daysSinceYearStart += daysOfMonth[m];
-            if((y>=2 && (y-2) % 4 != 0) || daysSinceYearStart > 31 + 28) leaps ++;
-            var days = y * 365 + leaps + daysSinceYearStart;
-            days * 86400 + hh * 3600 + mm * 60 + ss;
-          default: throw 'unreachable';
-        }
+        var s = SUPPORTED_DATE_REGEX.matched(1).split('T');
+        var d = s[0].split('-');
+        var t = s[1].split(':');
+        var y = Std.parseInt(d[0]) - 1970;
+        var m = Std.parseInt(d[1]);
+        var d = Std.parseInt(d[2]);
+        var hh = Std.parseInt(t[0]);
+        var mm = Std.parseInt(t[1]);
+        var ss = Std.parseInt(t[2]);
+        
+        var days = y * 365 + d - 1;
+        days += y < 2 ? 0 : Std.int((y-2) / 4); // leap years
+        var daysOfMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+        for(m in 0...m-1) days += daysOfMonth[m];
+        if(y >= 2) if((y-2) % 4 != 0 || m >= 3) days ++; // current year is leap and already passed Feb
+        var stamp = days * 86400 + hh * 3600 + mm * 60 + ss;
         
         var stamp = stamp + switch SUPPORTED_DATE_REGEX.matched(2) {
           case null: 0.0;
