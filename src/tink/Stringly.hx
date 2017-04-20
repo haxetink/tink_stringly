@@ -79,7 +79,7 @@ abstract Stringly(String) from String to String {
   // - Only support full date: so for example '20:00Z' (no date) or '2017-01-01' (no time) are not supported
   // - timezone indicator must exist, either "Z" or "+00:00". "+00" and "+0000" are not supported
   // sub-seconds is optional, but must be 3 digits if exists ".000"
-  static var SUPPORTED_DATE_REGEX = ~/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|\+\d{2}:\d{2})$/;
+  static var SUPPORTED_DATE_REGEX = ~/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{3})?(Z|\+\d{2}:\d{2})$/;
   
   @:to public function parseDate() {
     inline function fail(?pos:haxe.PosInfos) {
@@ -114,7 +114,34 @@ abstract Stringly(String) from String to String {
         }
         Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
-        throw 'not implemented';
+        var stamp = switch SUPPORTED_DATE_REGEX.matched(1) {
+          case _.split('T') => [_.split('-').map(Std.parseInt) => [y, m, d], _.split(':').map(Std.parseInt) => [hh, mm, ss]]:
+            y -= 1970;
+            var leaps = y < 2 ? 0 : Std.int((y-2) / 4);
+            var daysSinceYearStart = d - 1;
+            var daysOfMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+            for(m in 0...m-1) daysSinceYearStart += daysOfMonth[m];
+            if((y>=2 && (y-2) % 4 != 0) || daysSinceYearStart > 31 + 28) leaps ++;
+            var days = y * 365 + leaps + daysSinceYearStart;
+            days * 86400 + hh * 3600 + mm * 60 + ss;
+          default: throw 'unreachable';
+        }
+        
+        var stamp = stamp + switch SUPPORTED_DATE_REGEX.matched(2) {
+          case null: 0.0;
+          case v: Std.parseInt(v.substr(1)) / 1000;
+        }
+        
+        var stamp = stamp + switch SUPPORTED_DATE_REGEX.matched(3) {
+          case 'Z': 0.0;
+          case v:
+            var positive = v.charCodeAt(0) == '+'.code;
+            var s = v.substr(1).split(':');
+            (Std.parseInt(s[0]) * 3600 + Std.parseInt(s[1]) * 60) * (positive ? -1 : 1);
+        }
+        
+        Success(Date.fromTime(stamp * 1000));
+        
       #end
     }
   }

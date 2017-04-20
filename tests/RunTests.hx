@@ -13,13 +13,11 @@ class RunTests extends TestCase {
       assertEquals(a, b, pos);
     }
     
+    
     eq('100', 100);
     eq('123.456', 123.456);
-    eq(#if java '1.483232461E12' #else '1483232461000' #end, 1483232461000); // big float
     eq('true', true);
-    #if (js || java || cs || php)
-    eq(#if java '1.483232461E12' #else '1483232461000' #end, utc(2017,0,1,1,1,1));
-    #end
+    eq(#if java '1.483232461E12' #elseif interp '1.483232461e+12' #else '1483232461000' #end, utc(2017,0,1,1,1,1));
     eq('just some string', 'just some string');
   }
   
@@ -60,7 +58,6 @@ class RunTests extends TestCase {
     }
   }  
   
-  #if (js || java || cs || php)
   function testParseDate() {
     
     inline function invalidDate(val:Stringly, ?pos) 
@@ -73,24 +70,40 @@ class RunTests extends TestCase {
     invalidDate('20:00Z');
     invalidDate('2017-01-01 01:01:01');
     
-    inline function eq(a:Date, b:Stringly, ?pos) {
-      // trace(a.toString());
+    inline function eq(a:Date, b:Stringly, ?pos)
       assertEquals(a.toString(), (b:Date).toString(), pos);
-    }
     
-    // trace(new Date(1970,0,1,0,0,0).toString());
-    // trace(Date.fromString('1970-01-01 00:00:00').toString());
-    // trace(Date.fromTime(0).toString());
+     // timestamp (UTC)
+    eq(utc(2017,0,1,1,1,1), '1483232461000');
     
-    eq(utc(2017,0,1,1,1,1), '1483232461000'); // timestamp (UTC)
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01Z'); // ISO 8601
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00'); // ISO 8601
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00'); // ISO 8601
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000Z'); // ISO 8601
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000+00:00'); // ISO 8601
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01.000+08:00'); // ISO 8601
+    // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01Z');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000Z');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000+00:00');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01.000+08:00');
+    
+    eq(utc(2017,2,4,12,13,14), '2017-03-04T12:13:14Z');
+    eq(utc(2017,3,15,1,1,1), '2017-04-15T01:01:01+00:00');
+    eq(utc(2017,7,31,15,1,1), '2017-08-31T23:01:01+08:00');
+    eq(utc(2017,11,31,1,1,1), '2017-12-31T01:01:01.000Z');
+    eq(utc(1970,0,1,0,0,0), '1970-01-01T00:00:00.000+00:00');
+    
+     // leap year check
+    eq(utc(1970,1,27,0,0,0), '1970-02-27T00:00:00Z');
+    eq(utc(1970,1,28,0,0,0), '1970-02-28T00:00:00Z');
+    eq(utc(1970,2,1,0,0,0), '1970-03-01T00:00:00Z');
+    eq(utc(1972,1,27,0,0,0), '1972-02-27T00:00:00Z');
+    eq(utc(1972,1,28,0,0,0), '1972-02-28T00:00:00Z');
+    eq(utc(1972,1,29,0,0,0), '1972-02-29T00:00:00Z');
+    eq(utc(2003,1,27,1,0,0), '2003-02-27T01:00:00Z');
+    eq(utc(2003,1,28,1,0,0), '2003-02-28T01:00:00Z');
+    eq(utc(2003,2,1,1,0,0), '2003-03-01T01:00:00Z');
+    eq(utc(2004,1,27,1,0,0), '2004-02-27T01:00:00Z');
+    eq(utc(2004,1,28,1,0,0), '2004-02-28T01:00:00Z');
+    eq(utc(2004,1,29,1,0,0), '2004-02-29T01:00:00Z');
   }
-  #end
   
   function testParseBool() {
     function bool(s:String):Bool
