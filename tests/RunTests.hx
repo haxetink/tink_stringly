@@ -17,7 +17,7 @@ class RunTests extends TestCase {
     eq('123.456', 123.456);
     eq(#if java '1.483232461E12' #else '1483232461000' #end, 1483232461000); // big float
     eq('true', true);
-    #if (js || java || cs)
+    #if (js || java || cs || php)
     eq(#if java '1.483232461E12' #else '1483232461000' #end, utc(2017,0,1,1,1,1));
     #end
     eq('just some string', 'just some string');
@@ -60,7 +60,7 @@ class RunTests extends TestCase {
     }
   }  
   
-  #if (js || java || cs)
+  #if (js || java || cs || php)
   function testParseDate() {
     
     inline function invalidDate(val:Stringly, ?pos) 

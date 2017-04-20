@@ -105,6 +105,12 @@ abstract Stringly(String) from String to String {
           Success(new Date(d));
         } catch(e:Dynamic) 
           fail();
+      #elseif php
+        var s = this.replace('Z', '+00:00');
+        var d = DateTime.createFromFormat('Y-m-d\\TH:i:sP', s);
+        if(untyped __php__('!{0}', d)) d = DateTime.createFromFormat('Y-m-d\\TH:i:s.uP', s);
+        if(untyped __php__('!{0}', d)) return fail();
+        Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
         throw 'not implemented';
       #end
@@ -126,3 +132,11 @@ abstract Stringly(String) from String to String {
   @:from static inline function ofDate(d:Date):Stringly
     return ofFloat(d.getTime());
 }
+
+#if php
+@:native('DateTime')
+extern class DateTime {
+  static function createFromFormat(format:String, time:String, ?timezone:Dynamic):DateTime;
+  function getTimestamp():Int;
+}
+#end
