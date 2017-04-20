@@ -82,8 +82,8 @@ abstract Stringly(String) from String to String {
   static var SUPPORTED_DATE_REGEX = ~/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|\+\d{2}:\d{2})$/;
   
   @:to public function parseDate() {
-    inline function fail() {
-      return Failure(new Error(UnprocessableEntity, '$this is not a valid date'));
+    inline function fail(?pos:haxe.PosInfos) {
+      return Failure(new Error(UnprocessableEntity, '$this is not a valid date', pos));
     }
     return switch parseFloat() {
       case Success(f):
@@ -108,8 +108,10 @@ abstract Stringly(String) from String to String {
       #elseif php
         var s = this.replace('Z', '+00:00');
         var d = DateTime.createFromFormat('Y-m-d\\TH:i:sP', s);
-        if(untyped __php__('!{0}', d)) d = DateTime.createFromFormat('Y-m-d\\TH:i:s.uP', s);
-        if(untyped __php__('!{0}', d)) return fail();
+        if(untyped __php__('!{0}', d)) {
+          d = DateTime.createFromFormat('Y-m-d\\TH:i:s.uP', s);
+          if(untyped __php__('!{0}', d)) return fail();
+        }
         Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
         throw 'not implemented';
