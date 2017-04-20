@@ -15,9 +15,10 @@ class RunTests extends TestCase {
     
     eq('100', 100);
     eq('123.456', 123.456);
+    eq(#if java '1.483232461E12' #else '1483232461000' #end, 1483232461000); // big float
     eq('true', true);
-    #if js
-    eq('1483232461000', utc(2017,0,1,1,1,1));
+    #if (js || java || cs)
+    eq(#if java '1.483232461E12' #else '1483232461000' #end, utc(2017,0,1,1,1,1));
     #end
     eq('just some string', 'just some string');
   }
@@ -59,7 +60,7 @@ class RunTests extends TestCase {
     }
   }  
   
-  #if js
+  #if (js || java || cs)
   function testParseDate() {
     
     inline function invalidDate(val:Stringly, ?pos) 
@@ -67,15 +68,27 @@ class RunTests extends TestCase {
     
     invalidDate('a');
     invalidDate('2a');
+    invalidDate('2017-01-01');
+    invalidDate('01:01:01');
+    invalidDate('20:00Z');
+    invalidDate('2017-01-01 01:01:01');
     
-    inline function eq(a:Date, b:Stringly, ?pos) 
-      assertEquals(a.getTime(), (b:Date).getTime(), pos);
+    inline function eq(a:Date, b:Stringly, ?pos) {
+      // trace(a.toString());
+      assertEquals(a.toString(), (b:Date).toString(), pos);
+    }
     
-    eq(utc(2017,0,1,1,1,1), '1483232461000');
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01Z');
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00');
-    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00');
-    eq(utc(2017,0,1,0,0,0), '2017-01-01');
+    // trace(new Date(1970,0,1,0,0,0).toString());
+    // trace(Date.fromString('1970-01-01 00:00:00').toString());
+    // trace(Date.fromTime(0).toString());
+    
+    eq(utc(2017,0,1,1,1,1), '1483232461000'); // timestamp (UTC)
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01Z'); // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00'); // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00'); // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000Z'); // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01.000+00:00'); // ISO 8601
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01.000+08:00'); // ISO 8601
   }
   #end
   

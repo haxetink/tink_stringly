@@ -74,16 +74,37 @@ abstract Stringly(String) from String to String {
   @:to function toInt()
     return parseInt().sure();
     
+  
+  // This is a subset of ISO 8601
+  // - Only support full date: so for example '20:00Z' (no date) or '2017-01-01' (no time) are not supported
+  // - timezone indicator must exist, either "Z" or "+00:00". "+00" and "+0000" are not supported
+  // sub-seconds is optional, but must be 3 digits if exists ".000"
+  static var SUPPORTED_DATE_REGEX = ~/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?(Z|\+\d{2}:\d{2})$/;
+  
   @:to public function parseDate() {
     inline function fail() {
       return Failure(new Error(UnprocessableEntity, '$this is not a valid date'));
     }
     return switch parseFloat() {
-      case Success(f): Success(Date.fromTime(f));
+      case Success(f):
+        Success(Date.fromTime(f));
       case Failure(_): 
+        if(!SUPPORTED_DATE_REGEX.match(this)) return fail();
       #if js
         var date:Date = untyped __js__('new Date({0})', this);
         if(Math.isNaN(date.getTime())) fail() else Success(date);
+      #elseif java
+        try {
+          var d = java.javax.xml.bind.DatatypeConverter.parseDateTime(this).getTime();
+          Success(new Date(d.getYear() + 1900, d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+        } catch(e:Dynamic) 
+          fail();
+      #elseif cs
+        try {
+          var d = cs.system.DateTime.Parse(this, null, cs.system.globalization.DateTimeStyles.None);
+          Success(new Date(d));
+        } catch(e:Dynamic) 
+          fail();
       #else
         throw 'not implemented';
       #end
@@ -100,8 +121,8 @@ abstract Stringly(String) from String to String {
     return Std.string(i);  
     
   @:from static inline function ofFloat(f:Float):Stringly
-    return Std.string(f);    
+    return Std.string(f);
     
   @:from static inline function ofDate(d:Date):Stringly
-    return Std.string(d.getTime());    
+    return ofFloat(d.getTime());
 }
