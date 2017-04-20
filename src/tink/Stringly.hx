@@ -73,6 +73,25 @@ abstract Stringly(String) from String to String {
         
   @:to function toInt()
     return parseInt().sure();
+    
+  @:to public function parseDate() {
+    inline function fail() {
+      return Failure(new Error(UnprocessableEntity, '$this is not a valid date'));
+    }
+    return switch parseFloat() {
+      case Success(f): Success(Date.fromTime(f));
+      case Failure(_): 
+      #if js
+        var date:Date = untyped __js__('new Date({0})', this);
+        if(Math.isNaN(date.getTime())) fail() else Success(date);
+      #else
+        throw 'not implemented';
+      #end
+    }
+  }
+  
+  @:to function toDate()
+    return parseDate().sure();
       
   @:from static inline function ofBool(b:Bool):Stringly
     return if (b) 'true' else 'false';
@@ -82,4 +101,7 @@ abstract Stringly(String) from String to String {
     
   @:from static inline function ofFloat(f:Float):Stringly
     return Std.string(f);    
+    
+  @:from static inline function ofDate(d:Date):Stringly
+    return Std.string(d.getTime());    
 }

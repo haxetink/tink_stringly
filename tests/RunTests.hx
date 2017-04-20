@@ -16,6 +16,7 @@ class RunTests extends TestCase {
     eq('100', 100);
     eq('123.456', 123.456);
     eq('true', true);
+    eq('1483232461000', utc(2017,0,1,1,1,1));
     eq('just some string', 'just some string');
   }
   
@@ -56,6 +57,24 @@ class RunTests extends TestCase {
     }
   }  
   
+  function testParseDate() {
+    
+    inline function invalidDate(val:Stringly, ?pos) 
+      assertFalse(val.parseDate().isSuccess(), pos);
+    
+    invalidDate('a');
+    invalidDate('2a');
+    
+    inline function eq(a:Date, b:Stringly, ?pos) 
+      assertEquals(a.getTime(), (b:Date).getTime(), pos);
+    
+    eq(utc(2017,0,1,1,1,1), '1483232461000');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01Z');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00');
+    eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00');
+    eq(utc(2017,0,1,0,0,0), '2017-01-01');
+  }  
+  
   function testParseBool() {
     function bool(s:String):Bool
       return (s : Stringly);
@@ -71,6 +90,9 @@ class RunTests extends TestCase {
     assertFalse(bool('0'));
     assertFalse(bool(null));
   }
+  
+  function utc(y, m, d, H, M, S)
+    return DateTools.delta(new Date(y, m, d, H, M, S), -Date.fromString('1970-01-01 00:00:00').getTime());
   
   static function main() {
     var runner = new TestRunner();
