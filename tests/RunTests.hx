@@ -16,7 +16,9 @@ class RunTests extends TestCase {
     eq('100', 100);
     eq('123.456', 123.456);
     eq('true', true);
+    #if js
     eq('1483232461000', utc(2017,0,1,1,1,1));
+    #end
     eq('just some string', 'just some string');
   }
   
@@ -57,6 +59,7 @@ class RunTests extends TestCase {
     }
   }  
   
+  #if js
   function testParseDate() {
     
     inline function invalidDate(val:Stringly, ?pos) 
@@ -73,7 +76,8 @@ class RunTests extends TestCase {
     eq(utc(2017,0,1,1,1,1), '2017-01-01T01:01:01+00:00');
     eq(utc(2017,0,1,1,1,1), '2017-01-01T09:01:01+08:00');
     eq(utc(2017,0,1,0,0,0), '2017-01-01');
-  }  
+  }
+  #end
   
   function testParseBool() {
     function bool(s:String):Bool
