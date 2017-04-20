@@ -69,6 +69,10 @@ class RunTests extends TestCase {
     invalidDate('01:01:01');
     invalidDate('20:00Z');
     invalidDate('2017-01-01 01:01:01');
+    invalidDate('2017-01-01T01:01:01');
+    invalidDate('2017-01-01A01:01:01Z');
+    invalidDate('2017-01-01T01:01:01*00:00');
+    invalidDate('2017-01-01T01:01:01.000*00:00');
     
     inline function eq(a:Date, b:Stringly, ?pos)
       assertEquals(a.toString(), (b:Date).toString(), pos);
@@ -89,6 +93,10 @@ class RunTests extends TestCase {
     eq(utc(2017,7,31,15,1,1), '2017-08-31T23:01:01+08:00');
     eq(utc(2017,11,31,1,1,1), '2017-12-31T01:01:01.000Z');
     eq(utc(1970,0,1,0,0,0), '1970-01-01T00:00:00.000+00:00');
+    
+    // negative timezones
+    eq(utc(2017,0,1,17,1,1), '2017-01-01T09:01:01-08:00');
+    eq(utc(2017,0,1,17,1,1), '2017-01-01T09:01:01.000-08:00');
     
      // leap year check
     eq(utc(1970,1,27,0,0,0), '1970-02-27T00:00:00Z');
