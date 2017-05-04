@@ -14,10 +14,13 @@ abstract Stringly(String) from String to String {
   @:to function toFloat():Float;
   @:to public function parseInt():Outcome<Int, Error>;
   @:to function toInt():Int;
+  @:to public function parseDate():Outcome<Date, Error>;
+  @:to function toDate():Date;
       
   @:from static function ofBool(b:Bool):Stringly;
   @:from static function ofInt(i:Int):Stringly;
   @:from static function ofFloat(f:Float):Stringly;
+  @:from static function ofDate(d:Date):Stringly;
 }  
 ```
 
