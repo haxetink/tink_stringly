@@ -82,8 +82,8 @@ abstract Stringly(String) from String to String {
   static var SUPPORTED_DATE_REGEX = ~/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{3})?(Z|[\+-]\d{2}:\d{2})$/;
   
   @:to public function parseDate() {
-    inline function fail() {
-      return Failure(new Error(UnprocessableEntity, '$this is not a valid date'));
+    inline function fail(?pos:haxe.PosInfos) {
+      return Failure(new Error(UnprocessableEntity, '$this is not a valid date' #if !macro, pos #end));
     }
     return switch parseFloat() {
       case Success(f):
