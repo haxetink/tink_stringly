@@ -101,7 +101,8 @@ abstract Stringly(String) from String to String {
           fail();
       #elseif cs
         try {
-          var d = cs.system.DateTime.Parse(this, null, cs.system.globalization.DateTimeStyles.None);
+          var s = if(SUPPORTED_DATE_REGEX.matched(2) == null) this else this.substr(0, 23) + '0000' + this.substr(23);
+          var d = cs.system.DateTime.Parse(s, null, cs.system.globalization.DateTimeStyles.None);
           Success(new Date(d));
         } catch(e:Dynamic) 
           fail();
