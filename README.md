@@ -1,7 +1,7 @@
 # Tinkerbell ~~Stringly Mess~~ Stringliness
 
 [![Build Status](https://travis-ci.org/haxetink/tink_stringly.svg?branch=master)](https://travis-ci.org/haxetink/tink_stringly)
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/haxetink/public)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haxetink/public)
 
 A harsh and inescapable truth of contemporary programming reality is that there's a lot of stringliness going on everywhere. Numeric values just get passed around as their string representation and you somehow have to deal with it. Be it command line parameters, query string parameters or XML / HTML attributes. 
 
