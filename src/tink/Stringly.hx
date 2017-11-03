@@ -152,6 +152,9 @@ abstract Stringly(String) from String to String {
   
   @:to function toDate()
     return parseDate().sure();
+
+  public function parse<T>(f:Stringly->T)
+    return f.bind(this).catchExceptions();
       
   @:from static inline function ofBool(b:Bool):Stringly
     return if (b) 'true' else 'false';
