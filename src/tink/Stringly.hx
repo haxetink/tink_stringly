@@ -82,8 +82,8 @@ abstract Stringly(String) from String to String {
   static var SUPPORTED_DATE_REGEX = ~/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{3})?(Z|[\+-]\d{2}:\d{2})$/;
   
   @:to public function parseDate() {
-    inline function fail() {
-      return Failure(new Error(UnprocessableEntity, '$this is not a valid date'));
+    inline function fail(?pos:haxe.PosInfos) {
+      return Failure(new Error(UnprocessableEntity, '$this is not a valid date' #if !macro, pos #end));
     }
     return switch parseFloat() {
       case Success(f):
@@ -101,17 +101,15 @@ abstract Stringly(String) from String to String {
           fail();
       #elseif cs
         try {
-          var d = cs.system.DateTime.Parse(this, null, cs.system.globalization.DateTimeStyles.None);
+          var s = if(SUPPORTED_DATE_REGEX.matched(2) == null) this else this.substr(0, 23) + '0000' + this.substr(23);
+          var d = cs.system.DateTime.Parse(s, null, cs.system.globalization.DateTimeStyles.None);
           Success(new Date(d));
         } catch(e:Dynamic) 
           fail();
       #elseif php
         var s = this.replace('Z', '+00:00');
-        var d = DateTime.createFromFormat('Y-m-d\\TH:i:sP', s);
-        if(untyped __php__('!{0}', d)) {
-          d = DateTime.createFromFormat('Y-m-d\\TH:i:s.uP', s);
-          if(untyped __php__('!{0}', d)) return fail();
-        }
+        var d = DateTime.createFromFormat(if(SUPPORTED_DATE_REGEX.matched(2) == null) 'Y-m-d\\TH:i:sP' else 'Y-m-d\\TH:i:s.uP', s, new DateTimeZone('UTC'));
+        if(untyped __php__('!{0}', d)) return fail();
         Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
         var s = SUPPORTED_DATE_REGEX.matched(1).split('T');
@@ -174,5 +172,9 @@ abstract Stringly(String) from String to String {
 extern class DateTime {
   static function createFromFormat(format:String, time:String, ?timezone:Dynamic):DateTime;
   function getTimestamp():Int;
+}
+@:native('DateTimeZone')
+extern class DateTimeZone {
+  function new(s:String);
 }
 #end
