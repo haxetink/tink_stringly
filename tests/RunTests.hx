@@ -1,16 +1,18 @@
 package ;
 
-import haxe.unit.TestCase;
-import haxe.unit.TestRunner;
+import tink.testrunner.*;
+import tink.unit.*;
 import tink.Stringly;
 
 using tink.CoreApi;
 
-class RunTests extends TestCase {
+@:asserts
+class RunTests {
+  public function new() {}
   
-  function testStringify() {
-    inline function eq(a:String, b:Stringly, ?pos) {
-      assertEquals(a, b, pos);
+  public function testStringify() {
+    inline function eq(a:String, b:Stringly, ?pos:haxe.PosInfos) {
+      asserts.assert(a == b, pos);
     }
     
     
@@ -19,49 +21,52 @@ class RunTests extends TestCase {
     eq('true', true);
     eq(#if java '1.483232461E12' #elseif interp '1.483232461e+12' #else '1483232461000' #end, utc(2017,0,1,1,1,1));
     eq('just some string', 'just some string');
+    return asserts.done();
   }
   
-  function testParseInt() {
+  public function testParseInt() {
     
-    inline function invalidInt(val:Stringly, ?pos) 
-      assertFalse(val.parseInt().isSuccess(), pos);
+    inline function invalidInt(val:Stringly, ?pos:haxe.PosInfos) 
+      asserts.assert(!val.parseInt().isSuccess(), pos);
     
     invalidInt('10g');
     invalidInt('10.34');
     
-    inline function eq(a:Int, b:Stringly, ?pos) 
-      assertEquals(a, b, pos);
+    inline function eq(a:Int, b:Stringly, ?pos:haxe.PosInfos) 
+      asserts.assert(a == b, pos);
       
     for (i in 0...50) {
       var v = Std.random(100000000);
       eq(v,   v );
       eq(v, '$v');  
     }
+    return asserts.done();
   }
   
 
-  function testParseFloat() {
+  public function testParseFloat() {
     
-    inline function invalidFloat(val:Stringly, ?pos) 
-      assertFalse(val.parseFloat().isSuccess(), pos);
+    inline function invalidFloat(val:Stringly, ?pos:haxe.PosInfos) 
+      asserts.assert(!val.parseFloat().isSuccess(), pos);
     
     invalidFloat('10g');
     invalidFloat('10.34.5');
     
-    inline function eq(a:Float, b:Stringly, ?pos) 
-      assertEquals(a, b, pos);
+    inline function eq(a:Float, b:Stringly, ?pos:haxe.PosInfos) 
+      asserts.assert(a == b, pos);
       
     for (i in 0...50) {
       var v = Std.parseFloat(Std.string(i * Math.random() / Math.random()));
       eq(v,   v );
       eq(v, '$v');  
     }
+    return asserts.done();
   }  
   
-  function testParseDate() {
+  public function testParseDate() {
     
-    inline function invalidDate(val:Stringly, ?pos) 
-      assertFalse(val.parseDate().isSuccess(), pos);
+    inline function invalidDate(val:Stringly, ?pos:haxe.PosInfos) 
+      asserts.assert(!val.parseDate().isSuccess(), pos);
     
     invalidDate('a');
     invalidDate('2a');
@@ -74,8 +79,8 @@ class RunTests extends TestCase {
     invalidDate('2017-01-01T01:01:01*00:00');
     invalidDate('2017-01-01T01:01:01.000*00:00');
     
-    inline function eq(a:Date, b:Stringly, ?pos)
-      assertEquals(a.toString(), (b:Date).toString(), pos);
+    inline function eq(a:Date, b:Stringly, ?pos:haxe.PosInfos)
+      asserts.assert(a.toString() == (b:Date).toString(), pos);
     
      // timestamp (UTC)
     eq(utc(2017,0,1,1,1,1), '1483232461000');
@@ -113,25 +118,27 @@ class RunTests extends TestCase {
     eq(utc(2004,1,28,1,0,0), '2004-02-28T01:00:00Z');
     eq(utc(2004,1,29,1,0,0), '2004-02-29T01:00:00Z');
     eq(utc(2004,2,1,1,0,0), '2004-03-01T01:00:00Z');
+    return asserts.done();
   }
   
-  function testParseBool() {
+  public function testParseBool() {
     function bool(s:String):Bool
       return (s : Stringly);
       
-    assertTrue(bool('true'));
-    assertTrue(bool('yes'));
-    assertTrue(bool('1'));
-    assertTrue(bool('2'));
-    assertTrue(bool('whatever'));
+    asserts.assert(bool('true'));
+    asserts.assert(bool('yes'));
+    asserts.assert(bool('1'));
+    asserts.assert(bool('2'));
+    asserts.assert(bool('whatever'));
     
-    assertFalse(bool('false'));
-    assertFalse(bool('no'));
-    assertFalse(bool('0'));
-    assertFalse(bool(null));
+    asserts.assert(!bool('false'));
+    asserts.assert(!bool('no'));
+    asserts.assert(!bool('0'));
+    asserts.assert(!bool(null));
+    return asserts.done();
   }
   
-  function testCommaSeparatedArray() {
+  public function testCommaSeparatedArray() {
     function string(s:String):tink.stringly.CommaSeparatedArray<String>
       return (s : Stringly);
     function int(s:String):tink.stringly.CommaSeparatedArray<Int>
@@ -142,28 +149,30 @@ class RunTests extends TestCase {
       return (s : Stringly);
     
     var v = string('a,b,c,d,e');
-    for(i in 0...v.length) assertEquals(97 + i, v[i].charCodeAt(0));
+    for(i in 0...v.length) asserts.assert(97 + i == v[i].charCodeAt(0));
     
     var v = int('1,2,3,4,5');
-    for(i in 0...v.length) assertEquals(i + 1, v[i]);
+    for(i in 0...v.length) asserts.assert(i + 1 == v[i]);
     
     var v = float('1.1,2.2,3.3,4.4,5.5');
-    for(i in 0...v.length) assertEquals((i + 1) + (i + 1) / 10, v[i]);
+    for(i in 0...v.length) asserts.assert((i + 1) + (i + 1) / 10 == v[i]);
     
     var v = bool('true,yes,1,2,whatever');
-    for(i in 0...v.length) assertTrue(v[i]);
+    for(i in 0...v.length) asserts.assert(v[i]);
     
     var v = bool('false,no,0');
-    for(i in 0...v.length) assertFalse(v[i]);
+    for(i in 0...v.length) asserts.assert(!v[i]);
+    
+    return asserts.done();
   }
 
   function utc(y, m, d, H, M, S)
     return DateTools.delta(new Date(y, m, d, H, M, S), -Date.fromString('1970-01-01 00:00:00').getTime());
   
   static function main() {
-    var runner = new TestRunner();
-    runner.add(new RunTests());
-    travix.Logger.exit(if (runner.run()) 0 else 500);
+    Runner.run(TestBatch.make([
+      new RunTests(),
+    ])).handle(Runner.exit);
   }
   
 }
