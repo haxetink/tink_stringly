@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Add Date and CommaSpearatedArray",
-	"version": "0.2.0",
+	"releasenote": "Added Stringly#parse",
+	"version": "0.3.0",
 	"url": "https://github.com/haxetink/tink_stringly/",
 	"dependencies": {
 		"tink_core": ""

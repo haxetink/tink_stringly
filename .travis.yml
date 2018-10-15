@@ -13,7 +13,6 @@ os:
   # - osx
 
 env:
-  - HAXE_VERSION=3.3.0-rc.1
   - HAXE_VERSION=3.4.7
   - HAXE_VERSION=latest
   
@@ -38,14 +37,14 @@ jobs:
   include:
     # - stage: test # should uncomment this when there is no matrix above (e.g. only one os, one env, etc)
     - stage: deploy
-      language: haxe
-      haxe: "3.4.7"
       os: linux
-      install: skip
+      install:
+        - npm i -g lix
+        - lix download
       script: skip
       env:
-        secure: "cRcS+MSxzSMw7keyZuENmzhx77DYKTHHEGVECU7yOQhBjcnE8Z+FXrg5K+0gHWfH3V/0r8mJ7l2gOIwiqYMErNraZ3ktayWS+Pv7rj5b/z7z57E5fKQjmZQMk2adaAZMAqE7OYq0YS+s1lj4Pyu3Tsivx1IVNOSoueaZtVlhbpRbsjxmD0VinRGus3bLFdUExY7Y9sxddPf8JHGN+kJYkAXyBXhwyfhj/XVvq7waRs60t7olOyYW4E83h7yzwIlimuT8F0npv3LhJaGuQKOOjjZ4QR9YQeCH2Pvl/QTdr4Z/pFtqn08V4Jc1D7Y2dGGW5feqPjRn8lnHvbESf9Wz7v1F+4zwRLessCR24Pa5YnaGNXhsTK9wcStd6jygqEBpBWPKqnn2G+8KZAqkqsHeqUApuMe29dpYGaoVvrG+aVOT2hYHgosNaHhMO+Kr6qp6pZ5c5VqUBnCZoZWry5k+JvPaU6nuzvZol8zGoXqsRVJW081hzlj8Mgi05qlu/5cfrpx8Rezx47M/4fPkfR3HyEv/7TQpXENKXdYSvY+JTi0YUKOdKX4pY+FeFamfoIx1CKjE7lVmuPqa61J9iOtdlfuFVsBR+qqwijy8i0Rz4yc+2CBmq3MTK0/DJzvu9XfwrLuIcovhsuMkN7Kr4o/VaKgdw0xe7BAPsneTH4jimxY="
+        secure: cRcS+MSxzSMw7keyZuENmzhx77DYKTHHEGVECU7yOQhBjcnE8Z+FXrg5K+0gHWfH3V/0r8mJ7l2gOIwiqYMErNraZ3ktayWS+Pv7rj5b/z7z57E5fKQjmZQMk2adaAZMAqE7OYq0YS+s1lj4Pyu3Tsivx1IVNOSoueaZtVlhbpRbsjxmD0VinRGus3bLFdUExY7Y9sxddPf8JHGN+kJYkAXyBXhwyfhj/XVvq7waRs60t7olOyYW4E83h7yzwIlimuT8F0npv3LhJaGuQKOOjjZ4QR9YQeCH2Pvl/QTdr4Z/pFtqn08V4Jc1D7Y2dGGW5feqPjRn8lnHvbESf9Wz7v1F+4zwRLessCR24Pa5YnaGNXhsTK9wcStd6jygqEBpBWPKqnn2G+8KZAqkqsHeqUApuMe29dpYGaoVvrG+aVOT2hYHgosNaHhMO+Kr6qp6pZ5c5VqUBnCZoZWry5k+JvPaU6nuzvZol8zGoXqsRVJW081hzlj8Mgi05qlu/5cfrpx8Rezx47M/4fPkfR3HyEv/7TQpXENKXdYSvY+JTi0YUKOdKX4pY+FeFamfoIx1CKjE7lVmuPqa61J9iOtdlfuFVsBR+qqwijy8i0Rz4yc+2CBmq3MTK0/DJzvu9XfwrLuIcovhsuMkN7Kr4o/VaKgdw0xe7BAPsneTH4jimxY=
       after_success:
-        - haxelib install travix
-        - haxelib run travix install
-        - haxelib run travix release
+        - lix run travix install
+        - lix run travix release
+
