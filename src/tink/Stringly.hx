@@ -109,7 +109,7 @@ abstract Stringly(String) from String to String {
       #elseif php
         var s = this.replace('Z', '+00:00');
         var d = DateTime.createFromFormat(if(SUPPORTED_DATE_REGEX.matched(2) == null) 'Y-m-d\\TH:i:sP' else 'Y-m-d\\TH:i:s.uP', s, new DateTimeZone('UTC'));
-        if(untyped __php__('!{0}', d)) return fail();
+        if( #if haxe4 php.Syntax.code #else untyped __php__ #end ('!{0}', d)) return fail();
         Success(Date.fromTime(d.getTimestamp() * 1000));
       #else
         var s = SUPPORTED_DATE_REGEX.matched(1).split('T');
