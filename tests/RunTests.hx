@@ -26,8 +26,10 @@ class RunTests {
   
   public function testParseInt() {
     
-    inline function invalidInt(val:Stringly, ?pos:haxe.PosInfos) 
+    inline function invalidInt(val:Stringly, ?pos:haxe.PosInfos) {
+      asserts.assert(!val.isInt(), pos);
       asserts.assert(!val.parseInt().isSuccess(), pos);
+    }
     
     invalidInt('10g');
     invalidInt('10.34');
@@ -46,8 +48,10 @@ class RunTests {
 
   public function testParseFloat() {
     
-    inline function invalidFloat(val:Stringly, ?pos:haxe.PosInfos) 
+    inline function invalidFloat(val:Stringly, ?pos:haxe.PosInfos) {
+      asserts.assert(!val.isFloat(), pos);
       asserts.assert(!val.parseFloat().isSuccess(), pos);
+    }
     
     invalidFloat('10g');
     invalidFloat('10.34.5');

@@ -51,6 +51,10 @@ abstract Stringly(String) from String to String {
         case 'false', '0', 'no': false;
         default: true;
       }
+      
+  public inline function isFloat() {
+    return isNumber(this.trim(), true);
+  }
     
   @:to public function parseFloat()
     return switch this.trim() {
@@ -62,6 +66,10 @@ abstract Stringly(String) from String to String {
   
   @:to function toFloat()
     return parseFloat().sure();
+    
+  public inline function isInt() {
+    return isNumber(this.trim(), false);
+  }
     
   @:to public function parseInt()
     return switch this.trim() {
