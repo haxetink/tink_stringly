@@ -27,7 +27,7 @@ install:
   - lix download
   
 script:
-  - lix run travix interp
+  - lix run travix interp -D eval_call_stack_depth=2000
   - lix run travix neko
   - lix run travix python
   - lix run travix node
