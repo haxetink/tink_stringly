@@ -10,7 +10,7 @@ using tink.CoreApi;
 class RunTests {
   public function new() {}
   
-  public function testStringify() {
+  public function stringify() {
     inline function eq(a:String, b:Stringly, ?pos:haxe.PosInfos) {
       asserts.assert(a == b, pos);
     }
@@ -24,7 +24,7 @@ class RunTests {
     return asserts.done();
   }
   
-  public function testParseInt() {
+  public function parseInt() {
     
     inline function invalidInt(val:Stringly, ?pos:haxe.PosInfos) {
       asserts.assert(!val.isInt(), pos);
@@ -46,7 +46,7 @@ class RunTests {
   }
   
 
-  public function testParseFloat() {
+  public function parseFloat() {
     
     inline function invalidFloat(val:Stringly, ?pos:haxe.PosInfos) {
       asserts.assert(!val.isFloat(), pos);
@@ -67,7 +67,7 @@ class RunTests {
     return asserts.done();
   }  
   
-  public function testParseDate() {
+  public function parseDate() {
     
     inline function invalidDate(val:Stringly, ?pos:haxe.PosInfos) 
       asserts.assert(!val.parseDate().isSuccess(), pos);
@@ -125,7 +125,7 @@ class RunTests {
     return asserts.done();
   }
   
-  public function testParseBool() {
+  public function parseBool() {
     function bool(s:String):Bool
       return (s : Stringly);
       
@@ -142,7 +142,7 @@ class RunTests {
     return asserts.done();
   }
   
-  public function testCommaSeparatedArray() {
+  public function commaSeparatedArray() {
     function string(s:String):tink.stringly.CommaSeparatedArray<String>
       return (s : Stringly);
     function int(s:String):tink.stringly.CommaSeparatedArray<Int>
