@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Added Stringly#parse",
-	"version": "0.3.1",
+	"releasenote": "Added Stringly#isInt & Stringly#isFloat",
+	"version": "0.4.0",
 	"url": "https://github.com/haxetink/tink_stringly/",
 	"dependencies": {
 		"tink_core": ""
