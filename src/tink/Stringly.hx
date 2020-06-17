@@ -99,7 +99,7 @@ abstract Stringly(String) from String to String {
       case Failure(_): 
         if(!SUPPORTED_DATE_REGEX.match(this)) return fail();
       #if js
-        var date:Date = untyped __js__('new Date({0})', this);
+        var date:Date = #if haxe4 js.Syntax.code #else untyped __js__ #end('new Date({0})', this);
         if(Math.isNaN(date.getTime())) fail() else Success(date);
       #elseif java
         try {
