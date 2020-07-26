@@ -3,6 +3,7 @@ package tink;
 using tink.CoreApi;
 using StringTools;
 
+@:transitive
 abstract Stringly(String) from String to String {
    
   static function isNumber(s:String, allowFloat:Bool) {
@@ -64,7 +65,7 @@ abstract Stringly(String) from String to String {
         Failure(new Error(UnprocessableEntity, '$v (encoded as $this) is not a valid float'));
     }
   
-  @:to function toFloat()
+  @:to inline function toFloat()
     return parseFloat().sure();
     
   public inline function isInt() {
@@ -79,7 +80,7 @@ abstract Stringly(String) from String to String {
         Failure(new Error(UnprocessableEntity, '$v (encoded as $this) is not a valid integer'));
     }
         
-  @:to function toInt()
+  @:to inline function toInt()
     return parseInt().sure();
     
   
@@ -156,7 +157,7 @@ abstract Stringly(String) from String to String {
     }
   }
   
-  @:to function toDate()
+  @:to inline function toDate()
     return parseDate().sure();
 
   public inline function parse<T>(f:Stringly->T)
