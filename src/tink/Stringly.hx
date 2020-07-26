@@ -85,7 +85,7 @@ abstract Stringly(String) from String to String {
     
   
   // This is a subset of ISO 8601
-  // - Only support full date: so for example '20:00Z' (no date) or '2017-01-01' (no time) are not supported
+  // - Only support full date+time: so for example '20:00Z' (no date) or '2017-01-01' (no time) are not supported
   // - timezone indicator must exist, either "Z" or "+00:00". "+00" and "+0000" are not supported
   // - sub-seconds is optional, but must be 3 digits if exists ".000"
   static var SUPPORTED_DATE_REGEX = ~/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(\.\d{3})?(Z|[\+-]\d{2}:\d{2})$/;
