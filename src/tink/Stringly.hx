@@ -112,7 +112,7 @@ abstract Stringly(String) from String to String {
         try {
           var s = if(SUPPORTED_DATE_REGEX.matched(2) == null) this else this.substr(0, 23) + '0000' + this.substr(23);
           var d = cs.system.DateTime.Parse(s, null, cs.system.globalization.DateTimeStyles.None);
-          Success(new Date(d));
+          Success(@:privateAccess new Date(d));
         } catch(e:Dynamic) 
           fail();
       #elseif php
