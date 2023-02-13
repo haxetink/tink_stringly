@@ -104,9 +104,10 @@ abstract Stringly(String) from String to String {
         if(Math.isNaN(date.getTime())) fail() else Success(date);
       #elseif java
         try {
-          var d = java.javax.xml.bind.DatatypeConverter.parseDateTime(this).getTime();
-          Success(new Date(d.getYear() + 1900, d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
-        } catch(e:Dynamic) 
+          var epoch = java.time.Instant.parse(this).getEpochSecond();
+          var stamp = (Math.pow(1, 32) * epoch.high) + epoch.low;
+          Success(Date.fromTime(stamp * 1000));
+        } catch(e:Dynamic)
           fail();
       #elseif cs
         try {
