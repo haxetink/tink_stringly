@@ -110,7 +110,7 @@ abstract Stringly(String) from String to String {
         } catch(e:Dynamic)
           Failure(new Error("java.time.Instant is not supported"));
 
-        return outcome.isSuccess() ? outcome : try {
+        outcome.isSuccess() ? outcome : try {
           var d = java.javax.xml.bind.DatatypeConverter.parseDateTime(this).getTime();
           Success(new Date(d.getYear() + 1900, d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
         } catch(e:Dynamic)
