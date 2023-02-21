@@ -9,6 +9,7 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.haxe-version == 'nightly' }}
 
     strategy:
       matrix:
@@ -23,6 +24,7 @@ jobs:
           - js
           - cpp
           - php
+          - jvm
 
     steps:
     - name: Check out repo
@@ -55,6 +57,13 @@ jobs:
     - name: Install Haxe Libraries
       run: lix download
       
+    - name: Install Java
+      if: matrix.target == 'jvm'
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 8
+
     - name: Run Test
       run: lix run travix ${{ matrix.target }}
 
