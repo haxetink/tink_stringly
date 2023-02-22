@@ -19,7 +19,7 @@ jobs:
         target:
           - cpp
           # - cs
-          # - interp
+          - interp -D eval_call_stack_depth=4000
           # - js
           - jvm
           - lua
