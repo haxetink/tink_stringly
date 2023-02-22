@@ -17,14 +17,16 @@ jobs:
           - stable
           - nightly
         target:
-          - interp
-          - neko
-          - python
-          - node
-          # - js
           - cpp
-          - php
+          # - cs
+          # - interp
+          # - js
           - jvm
+          - lua
+          - neko
+          - node
+          - php
+          - python
 
     steps:
     - name: Check out repo
